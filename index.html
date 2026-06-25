@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projection patrimoniale — Thierry</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --turquoise: #0d8c74;
+  --turquoise-dark: #062e28;
+  --turquoise-mid: #0a6e5c;
+  --ink: #111827;
+  --ink60: rgba(17,24,39,0.55);
+  --ink35: rgba(17,24,39,0.38);
+  --ink10: rgba(17,24,39,0.08);
+  --surface2: #F7F8F9;
+  --white: #ffffff;
+  --ta30: rgba(13,140,116,0.25);
+  --ta15: rgba(13,140,116,0.09);
+  --font: 'Outfit', Arial, sans-serif;
+  --radius-md: 12px;
+}
+body { background: var(--white); font-family: var(--font); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+.hero { padding: 48px 48px 0; }
+.hero-title { font-size: 36px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; margin-bottom: 12px; }
+.hero-title span { color: var(--turquoise); }
+.hero-sub { font-size: 14px; color: var(--ink60); max-width: 640px; line-height: 1.7; }
+.hypotheses { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 28px 48px 0; }
+.hyp-card { background: var(--surface2); border: 1px solid var(--ink10); border-radius: var(--radius-md); padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; }
+.hyp-card::after { content: ''; position: absolute; bottom: -10px; right: -10px; width: 50px; height: 50px; border-radius: 50%; background: var(--ta15); pointer-events: none; }
+.hyp-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink35); font-weight: 500; }
+.hyp-value { font-size: 17px; font-weight: 700; color: var(--ink); }
+.hyp-sub { font-size: 11px; color: var(--turquoise-mid); font-weight: 500; }
+.section-sep { margin: 28px 48px 0; border: none; border-top: 1px solid var(--ink10); }
+.section-title { padding: 20px 48px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink35); font-weight: 600; }
+.slider-zone { margin: 32px 48px 0; background: var(--surface2); border: 1px solid var(--ink10); border-radius: 16px; padding: 24px 32px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.slider-label-group { display: flex; flex-direction: column; gap: 3px; min-width: 180px; }
+.slider-main-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.slider-hint { font-size: 11px; color: var(--ink35); }
+.slider-control { flex: 1; display: flex; align-items: center; gap: 16px; min-width: 200px; }
+.slider-control input[type=range] { flex: 1; -webkit-appearance: none; appearance: none; height: 5px; border-radius: 3px; outline: none; cursor: pointer; background: linear-gradient(to right, var(--turquoise) 0%, var(--turquoise) var(--pct, 13%), rgba(17,24,39,0.12) var(--pct, 13%), rgba(17,24,39,0.12) 100%); }
+.slider-control input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 3px solid var(--turquoise); cursor: pointer; box-shadow: 0 0 0 5px rgba(13,140,116,0.15); }
+.slider-control input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 3px solid var(--turquoise); cursor: pointer; }
+.year-display { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.year-bubble { background: var(--turquoise); color: var(--white); font-size: 22px; font-weight: 800; width: 60px; height: 60px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+.year-suffix { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink35); }
+.chart-section { padding: 32px 48px 0; }
+.chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.chart-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink35); font-weight: 500; }
+.legend { display: flex; gap: 20px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink60); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.chart-wrap { position: relative; width: 100%; height: 320px; }
+.kpi-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 28px 48px 0; }
+.kpi-card { background: var(--surface2); border: 1px solid var(--ink10); border-radius: 16px; padding: 24px 26px; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; }
+.kpi-card.accent { background: linear-gradient(135deg, var(--turquoise-dark) 0%, #0a4a3a 100%); border-color: var(--ta30); }
+.kpi-card::before { content: ''; position: absolute; top: -20px; right: -20px; width: 90px; height: 90px; border-radius: 50%; background: var(--ta15); pointer-events: none; }
+.kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink35); font-weight: 500; }
+.kpi-card.accent .kpi-label { color: rgba(255,255,255,0.65); }
+.kpi-value { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; color: var(--ink); }
+.kpi-card.accent .kpi-value { color: #ffffff; }
+.kpi-delta { font-size: 11px; font-weight: 500; margin-top: 2px; color: var(--ink35); }
+.kpi-card.accent .kpi-delta { color: rgba(255,255,255,0.75); }
+.disclaimer { padding: 24px 48px 40px; font-size: 11px; color: var(--ink35); line-height: 1.8; border-top: 1px solid var(--ink10); margin-top: 32px; }
+.disclaimer strong { color: var(--ink60); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1 class="hero-title">
+    Projection de rentabilité de<br>
+    <span>votre stratégie patrimoniale</span>
+  </h1>
+  <p class="hero-sub">
+    Cette projection illustre le potentiel de valorisation combiné de votre assurance-vie et de votre PER Generali,
+    sur la base des hypothèses retenues. Elle tient compte des effets des intérêts composés propres à chaque enveloppe.
+  </p>
+</div>
+
+<div class="section-title">Assurance-vie Generali · 30 000 €</div>
+<div class="hypotheses">
+  <div class="hyp-card">
+    <div class="hyp-label">Capital AV total</div>
+    <div class="hyp-value">30 000 €</div>
+    <div class="hyp-sub">3 supports</div>
+  </div>
+  <div class="hyp-card">
+    <div class="hyp-label">Fonds Euros</div>
+    <div class="hyp-value">10 000 €</div>
+    <div class="hyp-sub">Court terme · 5,3 % / an</div>
+  </div>
+  <div class="hyp-card">
+    <div class="hyp-label">PS Actions Souveraineté</div>
+    <div class="hyp-value">7 500 €</div>
+    <div class="hyp-sub">Moyen terme · 9,5 % / an</div>
+  </div>
+  <div class="hyp-card">
+    <div class="hyp-label">PS Mémoire Euribor</div>
+    <div class="hyp-value">7 500 €</div>
+    <div class="hyp-sub">Moyen terme · 6,8 % / an</div>
+  </div>
+</div>
+
+<hr class="section-sep">
+<div class="section-title">PER Generali · 20 000 €</div>
+<div class="hypotheses">
+  <div class="hyp-card">
+    <div class="hyp-label">Capital PER total</div>
+    <div class="hyp-value">20 000 €</div>
+    <div class="hyp-sub">1 support</div>
+  </div>
+  <div class="hyp-card">
+    <div class="hyp-label">PS Actions Souveraineté</div>
+    <div class="hyp-value">20 000 €</div>
+    <div class="hyp-sub">Moyen terme · 9,5 % / an</div>
+  </div>
+</div>
+
+<div class="slider-zone">
+  <div class="slider-label-group">
+    <div class="slider-main-label">Horizon de projection</div>
+    <div class="slider-hint">Faites glisser pour choisir la durée</div>
+  </div>
+  <div class="slider-control">
+    <input type="range" id="yearSlider" min="1" max="30" value="5" step="1">
+  </div>
+  <div class="year-display">
+    <div class="year-bubble" id="yearBubble">5</div>
+    <div class="year-suffix">ans</div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header">
+    <div class="chart-title">Évolution du capital dans le temps — AV + PER</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#0d8c74;"></div>Capital projeté</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(17,24,39,0.12);border:1px solid rgba(17,24,39,0.25);"></div>Capital investi</div>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="projChart"></canvas>
+  </div>
+</div>
+
+<div class="kpi-section">
+  <div class="kpi-card">
+    <div class="kpi-label">Capital total investi</div>
+    <div class="kpi-value">50 000 €</div>
+    <div class="kpi-delta">AV 30 000 € + PER 20 000 €</div>
+  </div>
+  <div class="kpi-card accent">
+    <div class="kpi-label">Capital projeté</div>
+    <div class="kpi-value" id="kpiProjected">—</div>
+    <div class="kpi-delta" id="kpiHorizon">Dans 5 ans</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Gain estimé</div>
+    <div class="kpi-value" id="kpiGain">—</div>
+    <div class="kpi-delta" id="kpiGainPct">Performance de la stratégie</div>
+  </div>
+</div>
+
+<div class="disclaimer">
+  <strong>Avertissement ·</strong> Les projections présentées sont établies sur la base d'hypothèses de rendement estimées et ne constituent pas une garantie de performance future. Les produits structurés présentent un risque de perte en capital. Les rendements affichés sont des estimations indicatives.
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const AV_A = 10000, rAV_A = 0.053;
+const AV_B = 7500,  rAV_B = 0.095;
+const AV_C = 7500,  rAV_C = 0.068;
+const PER_A = 20000, rPER_A = 0.095;
+const CAPITAL = 50000;
+
+function fmt(n) {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(n));
+}
+
+function compute(years) {
+  const labels = [], projected = [], invested = [];
+  for (let y = 0; y <= years; y++) {
+    labels.push(y === 0 ? "Aujourd'hui" : 'An ' + y);
+    projected.push(Math.round(
+      AV_A  * Math.pow(1 + rAV_A,  y) +
+      AV_B  * Math.pow(1 + rAV_B,  y) +
+      AV_C  * Math.pow(1 + rAV_C,  y) +
+      PER_A * Math.pow(1 + rPER_A, y)
+    ));
+    invested.push(CAPITAL);
+  }
+  return { labels, projected, invested };
+}
+
+let chart;
+function buildChart(years) {
+  const { labels, projected, invested } = compute(years);
+  const ctx = document.getElementById('projChart').getContext('2d');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Capital projeté', data: projected, borderColor: '#0d8c74', backgroundColor: 'rgba(13,140,116,0.10)', borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#0d8c74', pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2, fill: true, tension: 0.35 },
+        { label: 'Capital investi', data: invested, borderColor: 'rgba(17,24,39,0.22)', backgroundColor: 'rgba(17,24,39,0.03)', borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0, pointHoverRadius: 4, fill: true, tension: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#ffffff', borderColor: 'rgba(13,140,116,0.3)', borderWidth: 1,
+          titleColor: 'rgba(17,24,39,0.5)', bodyColor: '#111827',
+          titleFont: { family: 'Outfit', size: 11, weight: '500' },
+          bodyFont: { family: 'Outfit', size: 13, weight: '700' },
+          padding: 14,
+          callbacks: { label: ctx => '  ' + ctx.dataset.label + ' : ' + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(ctx.parsed.y) }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(17,24,39,0.06)', drawBorder: false }, ticks: { color: 'rgba(17,24,39,0.35)', font: { family: 'Outfit', size: 11 }, maxTicksLimit: 12, maxRotation: 0 }, border: { display: false } },
+        y: { grid: { color: 'rgba(17,24,39,0.06)', drawBorder: false }, ticks: { color: 'rgba(17,24,39,0.35)', font: { family: 'Outfit', size: 11 }, callback: v => { if (v >= 1000000) return (v/1000000).toFixed(1).replace('.',',')+' M€'; if (v >= 1000) return (v/1000).toFixed(0)+' k€'; return v+' €'; } }, border: { display: false } }
+      }
+    }
+  });
+  const finalProj = projected[years];
+  const gain = finalProj - CAPITAL;
+  const gainPct = ((gain / CAPITAL) * 100).toFixed(1);
+  document.getElementById('kpiProjected').textContent = fmt(finalProj);
+  document.getElementById('kpiHorizon').textContent   = 'Dans ' + years + ' an' + (years > 1 ? 's' : '');
+  document.getElementById('kpiGain').textContent      = '+' + fmt(gain);
+  document.getElementById('kpiGainPct').textContent   = '+' + gainPct + ' % de performance estimée';
+}
+
+const slider = document.getElementById('yearSlider');
+function update() {
+  const y = parseInt(slider.value);
+  document.getElementById('yearBubble').textContent = y;
+  slider.style.setProperty('--pct', ((y - 1) / 29 * 100).toFixed(1) + '%');
+  buildChart(y);
+}
+slider.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>
